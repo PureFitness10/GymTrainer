@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuntosalitreenit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="number"], input[type="text"] {
+      width: 80px;
+      margin: 3px;
+    }
+    button {
+      margin-top: 10px;
+    }
+    .section {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏋️ KuntosaliApp</h1>
+
+  <div id="loginSection">
+    <h2>Luo käyttäjä</h2>
+    <input type="text" id="usernameInput" placeholder="Käyttäjänimi">
+    <button onclick="createUser()">Aloita</button>
+  </div>
+
+  <div id="appSection" class="hidden">
+    <h2>Tervetuloa, <span id="usernameDisplay"></span>!</h2>
+
+    <div class="section">
+      <h3>1. Valitse liikkeet:</h3>
+      <label><input type="checkbox" value="Kyykky"> Kyykky</label>
+      <label><input type="checkbox" value="Penkki"> Penkki</label>
+      <label><input type="checkbox" value="Maastaveto"> Maastaveto</label>
+      <label><input type="checkbox" value="Leuanveto"> Leuanveto</label>
+      <label><input type="checkbox" value="Pystypunnerrus"> Pystypunnerrus</label>
+      <button onclick="startWorkout()">Aloita treeni</button>
+    </div>
+
+    <div class="section hidden" id="workoutSection">
+      <h3>2. Kirjaa sarjat:</h3>
+      <div id="workoutArea"></div>
+      <button onclick="saveWorkout()">💾 Tallenna treeni</button>
+    </div>
+
+    <div class="section">
+      <h3>📈 Ennätystulokset</h3>
+      <div id="recordsArea"></div>
+    </div>
+
+    <div class="section">
+      <h3>📅 Treenihistoria</h3>
+      <div id="historyArea"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = null;
+    let data = {};
+
+    function saveData() {
+      localStorage.setItem("gymAppData", JSON.stringify(data));
+    }
+
+    function loadData() {
+      const stored = localStorage.getItem("gymAppData");
+      if (stored) {
+        data = JSON.parse(stored);
+      }
+    }
+
+    function createUser() {
+      const username = document.getElementById("usernameInput").value.trim();
+      if (!username) {
+        alert("Anna käyttäjänimi.");
+        return;
+      }
+      currentUser = username;
+      if (!data[username]) {
+        data[username] = { records: {}, history: [] };
+        saveData();
+      }
+      localStorage.setItem("gymAppCurrentUser", username);
+      showApp();
+    }
+
+    function showApp() {
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("appSection").classList.remove("hidden");
+      document.getElementById("usernameDisplay").textContent = currentUser;
+      showRecords();
+      showHistory();
+    }
+
+    function startWorkout() {
+      const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+
+      if (selected.length === 0) {
+        alert("Valitse vähintään yksi liike!");
+        return;
+      }
+
+      const area = document.getElementById("workoutArea");
+      area.innerHTML = "";
+
+      selected.forEach(ex => {
+        area.innerHTML += `
+          <div>
+            <h4>${ex}</h4>
+           
+</script>
